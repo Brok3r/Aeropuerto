@@ -11,6 +11,7 @@ import java.util.Random;
  * @author Jumi
  */
 public class CrossRoad {
+    
     private String idCrossRoad;
     private boolean northCarrer;
     private boolean southCarrer;

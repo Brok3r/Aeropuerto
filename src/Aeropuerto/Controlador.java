@@ -22,7 +22,7 @@
 
 package Aeropuerto;
 
-import aeroport.Avio.Direction;
+import Aeropuerto.Avio.Direction;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Iterator;

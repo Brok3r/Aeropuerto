@@ -17,7 +17,6 @@ import javax.imageio.ImageIO;
 
 import Aeropuerto.Finger;
 import Aeropuerto.Finger.Estat;
-import aeroport.Avio.Direction;
 
 public class Mapa extends Canvas implements Runnable {
 
@@ -106,9 +105,43 @@ public class Mapa extends Canvas implements Runnable {
         this.crossroads.add(newCr);
         return true;
     }
-// pasa per totes ses horitzontals i mira si se creua amb alguna vertical
-    //i si coincideix pinta creuament
+// _____________________   MOTOR GRAFICO
+boolean bol=true;
+    @Override
+    public void run() {
+        this.createBufferStrategy(2);
 
+        while (!Aeroport.isEnd()) {
+
+            this.paint();
+ 
+            for (int i = 0; i < controlador.avions.size(); i++) {
+                Avio a = controlador.avions.get(i);
+                    
+                for (int j = 0; j < this.carrers.size(); j++) {
+                    if(this.carrers.get(i).insideAnyCrossRoad(a.getCmPosition())){
+                        System.out.println("cruce");
+                      if(a.getSpeed()<40){
+                           a.setWay(carrers.get(1)); //actualizamos carrer
+                           a.setCmPosition(carrers.get(3).getEntryPoint(Avio.Direction.FORWARD)); //Nova posició relativa de l'avió dintre del nou carrer
+                           a.setDirection(Avio.Direction.FORWARD); // Actualizamos sentido del avion dentro del carrer
+                      }
+                    }
+                        
+                }
+                 
+
+            }
+
+            do {
+                try {
+                    Thread.sleep(7); // nano -> ms
+                } catch (InterruptedException ex) {
+                }
+            } while (Aeroport.isPaused());
+        }
+    }
+//_______________________-
     private void calculateCrossRoads() {
         Iterator<Carrer> itrCarrers1;
         Iterator<Carrer> itrCarrers2;
@@ -263,51 +296,7 @@ public class Mapa extends Canvas implements Runnable {
             itr.next().paint(g, this.factorX, this.factorY, this.offsetX, this.offsetY);
         }
     }
-// _____________________   MOTOR GRAFICO
-boolean bol=true;
-    @Override
-    public void run() {
-        this.createBufferStrategy(2);
 
-        while (!Aeroport.isEnd()) {
-
-            this.paint();
- 
-            for (int i = 0; i < controlador.avions.size(); i++) {
-                Avio a = controlador.avions.get(i);
-
-                for (int j = 0; j < this.crossroads.size(); j++) {
-                    int iniX = this.crossroads.get(j).getIniX();
-                    int finX = this.crossroads.get(j).getFinX();
-                    if (a.getCmPosition() <= finX & a.getCmPosition() >= iniX) {
-                        //metodo para cambiar
-                       
-                        if(bol){
-                             if(a.getEstado()==EstatAvio.RUN){
-                            
-                            a.setWay(carrers.get(1));
-                            a.setCmPosition(carrers.get(3).getEntryPoint(Avio.Direction.FORWARD));
-                            a.setDirection(Avio.Direction.FORWARD);
-                                 System.out.println("dentro");
-                                  bol=false;
-                            //a.setCmPosition(500);
-                       }
-                            
-                        }
-                    }
-                }
-
-            }
-
-            do {
-                try {
-                    Thread.sleep(7); // nano -> ms
-                } catch (InterruptedException ex) {
-                }
-            } while (Aeroport.isPaused());
-        }
-    }
-//_______________________-
 
     public void zoomIn() {
         this.zoomIn(0.01f);

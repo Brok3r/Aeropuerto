@@ -1,6 +1,5 @@
 package Aeropuerto;
 
-import aeroport.Finger.Estado;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -316,7 +315,7 @@ public class Avio extends Thread {
 	public void run(){
 		while(true){
 			try {
-				Thread.sleep(3);
+				Thread.sleep(7);
 				if(this.estado.equals(EstatAvio.FLYING)){
                                     this.cmPosition+=this.speed;
                                     this.speed-=0.1;
