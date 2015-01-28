@@ -17,6 +17,8 @@ import javax.imageio.ImageIO;
 
 import Aeropuerto.Finger;
 import Aeropuerto.Finger.Estat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Mapa extends Canvas implements Runnable {
 
@@ -108,27 +110,43 @@ public class Mapa extends Canvas implements Runnable {
 // _____________________   MOTOR GRAFICO
 boolean bol=true;
     @Override
-    public void run() {
+    public    void run() {
         this.createBufferStrategy(2);
 
         while (!Aeroport.isEnd()) {
 
             this.paint();
- 
+           
             for (int i = 0; i < controlador.avions.size(); i++) {
                 Avio a = controlador.avions.get(i);
-                    
-                for (int j = 0; j < this.carrers.size(); j++) {
-                    if(this.carrers.get(i).insideAnyCrossRoad(a.getCmPosition())){
-                        System.out.println("cruce");
+                
+                //ERROR: el run del hilo del avion se sigue moviendo
+                    for (Carrer carrer : this.carrers) {
+                         if(this.carrers.get(i).insideAnyCrossRoad(a.getCmPosition())){
+                             try {
+                                 a.wait();
+                             } catch (InterruptedException ex) {
+                             }
                       if(a.getSpeed()<40){
-                           a.setWay(carrers.get(1)); //actualizamos carrer
-                           a.setCmPosition(carrers.get(3).getEntryPoint(Avio.Direction.FORWARD)); //Nova posició relativa de l'avió dintre del nou carrer
+                          CrossRoad cr = carrer.intersectedCrossRoad(a.getCmPosition());
+                           a.notify();
+                          a.setWay(cr.getVCarrer());
+                        //   a.setWay(carrers.get(1)); //actualizamos carrer
+                          a.setDirection(Avio.Direction.FORWARD);
+                           a.setCmPosition(cr.getVCarrer().getEntryPoint(a.getDirection())); //Nova posició relativa de l'avió dintre del nou carrer
                            a.setDirection(Avio.Direction.FORWARD); // Actualizamos sentido del avion dentro del carrer
+                          
+                      }
+                   
                       }
                     }
                         
                 }
+            
+            
+            
+            
+            
                  
 
             }
@@ -140,7 +158,7 @@ boolean bol=true;
                 }
             } while (Aeroport.isPaused());
         }
-    }
+    
 //_______________________-
     private void calculateCrossRoads() {
         Iterator<Carrer> itrCarrers1;
@@ -245,7 +263,7 @@ boolean bol=true;
         while (itr.hasNext()) {
             itr.next().paint(g, this.factorX, this.factorY, this.offsetX, this.offsetY);
         }
-
+        
     }
 
     public void paintTerminal(Graphics g) {

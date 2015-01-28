@@ -25,7 +25,6 @@ public class HCarrer extends Carrer {
 
     @Override
     public void addCrossRoad(CrossRoad cr) {
-        this.cr = cr;
         crossRoads.add(cr);
 
     }
@@ -120,8 +119,6 @@ public class HCarrer extends Carrer {
         g.fillRect(xIni, yFin - 2 * widthMark, xFin - xIni, widthMark);
     }
 
-  
-
     @Override
     public boolean insideAnyCrossRoad(int cmPosition) {
         return this.intersectedCrossRoad(cmPosition) != null;
@@ -162,8 +159,6 @@ public class HCarrer extends Carrer {
         return cmPosX;
     }
 
- 
-    
     public int getCmPosY(int cmPosition, Avio.Direction direction) {
         if (direction == Avio.Direction.FORWARD) {
             return this.cmFinY - (this.cmWidth / 4);
@@ -172,7 +167,7 @@ public class HCarrer extends Carrer {
         }
     }
 
-    
+   
     public int getCmPosition(int cmPosX, int cmPosY, Avio.Direction direction) {
         int cmPosition;
 

@@ -41,7 +41,7 @@ public class Aeroport extends JFrame implements Runnable, MouseWheelListener, Ac
         traffic = new Controlador(map.getCarrers());
         
         this.map.setControlador(this.traffic);
-
+        
         this.setLocationRelativeTo(null);
 
         new Thread(this.map, "Hilo 1").start();

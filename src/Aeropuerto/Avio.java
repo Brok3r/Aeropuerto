@@ -147,7 +147,7 @@ public class Avio extends Thread {
     private String idAvio;
     private Direction direction;
     private EstatAvio estado;
-    
+     
     public Avio(String idAvio, Carrer way) {
         this.idAvio = idAvio;
         this.cmLong = 800;
@@ -315,8 +315,12 @@ public class Avio extends Thread {
 	public void run(){
 		while(true){
 			try {
-				Thread.sleep(7);
-				if(this.estado.equals(EstatAvio.FLYING)){
+				Thread.sleep(2);
+				
+                      
+                                
+                                
+                                if(this.estado.equals(EstatAvio.FLYING)){
                                     this.cmPosition+=this.speed;
                                     this.speed-=0.1;
                                    
