@@ -20,7 +20,7 @@ import javax.imageio.ImageIO;
 public class AvioGraphics {
 
     public static BufferedImage imgAvio1;
-
+    public static BufferedImage imgAvio2;
     private static boolean isLoad = false;
 
     private static void loadCarImages() {
@@ -29,6 +29,7 @@ public class AvioGraphics {
         }
 
         AvioGraphics.imgAvio1 = AvioGraphics.loadImage("avion.png");
+        AvioGraphics.imgAvio2 = AvioGraphics.loadImage("avionv.png");
         AvioGraphics.isLoad = true;
     }
 
@@ -86,26 +87,26 @@ public class AvioGraphics {
         return imgFinal;
     }
 
-    public static BufferedImage getCarImage(Avio avio, float factorX, float factorY, double rotationAngle) {
-        BufferedImage imgSrc;
+//    public static BufferedImage getCarImage(Avio avio, float factorX, float factorY, double rotationAngle) {
+//        BufferedImage imgSrc;
+//
+//        if (!AvioGraphics.isLoad) {
+//            AvioGraphics.loadCarImages();
+//        }
+//
+//        imgSrc = AvioGraphics.imgAvio1;
+//
+//        if (imgSrc == null) {
+//            imgSrc = AvioGraphics.createCarImg(avio, factorX, factorY);
+//        }
+//
+//        imgSrc = AvioGraphics.processCarImg(imgSrc, avio.getWidthInCm(), avio.getLongInCm(), factorX, factorY, rotationAngle);
+//
+//
+//        return imgSrc;
+//    }
 
-        if (!AvioGraphics.isLoad) {
-            AvioGraphics.loadCarImages();
-        }
-
-        imgSrc = AvioGraphics.imgAvio1;
-
-        if (imgSrc == null) {
-            imgSrc = AvioGraphics.createCarImg(avio, factorX, factorY);
-        }
-
-        imgSrc = AvioGraphics.processCarImg(imgSrc, avio.getWidthInCm(), avio.getLongInCm(), factorX, factorY, rotationAngle);
-
-
-        return imgSrc;
-    }
-
-    public static BufferedImage getCarImage(Avio avio) {
+    public static BufferedImage getCarImage(Avio avio, Avio.Orientation o) {
         BufferedImage imgSource, imgTarget;
         Graphics2D g2d;
 
@@ -114,9 +115,12 @@ public class AvioGraphics {
         }
 
         imgTarget = imgSource = null;
+        if(o  == Avio.Orientation.NORTH || o  == Avio.Orientation.SOUDTH){
+              imgSource = AvioGraphics.imgAvio2;
+        }else imgSource = AvioGraphics.imgAvio1;
 
-                imgSource = AvioGraphics.imgAvio1;
-
+              
+        
 
         if (imgSource != null) {
             imgTarget = new BufferedImage(imgSource.getWidth(), imgSource.getHeight(), BufferedImage.TYPE_INT_ARGB);

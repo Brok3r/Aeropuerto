@@ -125,6 +125,8 @@ public abstract class Carrer {
 
     public abstract boolean posIsInside(int cmPosition, Direction direction);
 
+    public abstract int getCmPosition(int cmPosX, int cmPosY, Avio.Direction direction);
+    
     public synchronized void removeAvio(Avio Avio) {
         this.avions.remove(Avio);
     }

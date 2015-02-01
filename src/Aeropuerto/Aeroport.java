@@ -47,7 +47,6 @@ public class Aeroport extends JFrame implements Runnable, MouseWheelListener, Ac
         new Thread(this.map, "Hilo 1").start();
         new Thread(this.traffic, "Hilo 2").start();
         this.play(); // Arracar el simul·lador
-
         new Thread(this, "Hilo 3").start();
     }
 
