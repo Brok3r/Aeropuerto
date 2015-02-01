@@ -117,32 +117,32 @@ boolean bol=true;
 
             this.paint();
            
-            for (int i = 0; i < controlador.avions.size(); i++) {
-                Avio a = controlador.avions.get(i);
-                
-                //ERROR: el run del hilo del avion se sigue moviendo
-                    for (Carrer carrer : this.carrers) {
-                         if(this.carrers.get(i).insideAnyCrossRoad(a.getCmPosition())){
-                             try {
-                                 a.wait();
-                             } catch (InterruptedException ex) {
-                             }
-                      if(a.getSpeed()<40){
-                          CrossRoad cr = carrer.intersectedCrossRoad(a.getCmPosition());
-                           a.notify();
-                          a.setWay(cr.getVCarrer());
-                        //   a.setWay(carrers.get(1)); //actualizamos carrer
-                          a.setDirection(Avio.Direction.FORWARD);
-                           a.setCmPosition(cr.getVCarrer().getEntryPoint(a.getDirection())); //Nova posició relativa de l'avió dintre del nou carrer
-                           a.setDirection(Avio.Direction.FORWARD); // Actualizamos sentido del avion dentro del carrer
-                          
-                      }
-                   
-                      }
-                    }
-                        
-                }
-            
+//            for (int i = 0; i < controlador.avions.size(); i++) {
+//                Avio a = controlador.avions.get(i);
+//                
+//                //ERROR: el run del hilo del avion se sigue moviendo
+//                    for (Carrer carrer : this.carrers) {
+//                         if(this.carrers.get(i).insideAnyCrossRoad(a.getCmPosition())){
+//                             try {
+//                                 a.wait();
+//                             } catch (InterruptedException ex) {
+//                             }
+//                      if(a.getSpeed()<40){
+//                          CrossRoad cr = carrer.intersectedCrossRoad(a.getCmPosition());
+//                           a.notify();
+//                          a.setWay(cr.getVCarrer());
+//                        //   a.setWay(carrers.get(1)); //actualizamos carrer
+//                          a.setDirection(Avio.Direction.FORWARD);
+//                           a.setCmPosition(cr.getVCarrer().getEntryPoint(a.getDirection())); //Nova posició relativa de l'avió dintre del nou carrer
+//                           a.setDirection(Avio.Direction.FORWARD); // Actualizamos sentido del avion dentro del carrer
+//                          
+//                      }
+//                   
+//                      }
+//                    }
+//                        
+//                }
+//            
             
             
             

@@ -284,7 +284,13 @@ public class Avio extends Thread {
         this.cmPosition = cmPos;
 		
 	}
-
+        public boolean estaEnCruce(){
+            return this.getWay().insideAnyCrossRoad(this.getCmPosition());
+        }
+        
+        public CrossRoad recuperarCrossRoad(){
+            return this.getWay().intersectedCrossRoad(this.getCmPosition());
+        }
 
 	public synchronized void paint(Graphics g, float factorX, float factorY, int offsetX, int offsetY) {
 		int iniX, iniY, finX, finY;
@@ -315,22 +321,38 @@ public class Avio extends Thread {
 	public void run(){
 		while(true){
 			try {
-				Thread.sleep(2);
+				Thread.sleep(7);
 				
-                      
-                                
+                             if(this.speed<=20){
+                                    this.estado=EstatAvio.RUN;
+                                   
+                                    this.cmPosition+=this.speed;
+                                    
+                                   if(this.estaEnCruce()) {
+                                       System.out.println("Cruceee");
+                                       
+                                       CrossRoad cr = this.recuperarCrossRoad();
+                                       Carrer c = cr.getVCarrer();
+                                       this.setWay(c);
+                                       this.setCmPosition(c.cmIniX+1000);
+//                                       this.setWay(this.getWay().intersectedCrossRoad(this.getCmPosition()).getVCarrer()); //cambio de carretera 
+//                                    CrossRoad cr = this.getWay().intersectedCrossRoad(this.getCmPosition());
+//                                       System.out.println(cr.getVCarrer().idWay);
+//                                       System.out.println("hola k ase");
+//                                    this.setCmPosition(this.getWay().intersectedCrossRoad(this.getCmPosition()).getVCarrer().getEntryPoint(this.getDirection()));
+//                                    this.setDirection(Avio.Direction.FORWARD);
+                                }
+                                }
+        
                                 
                                 if(this.estado.equals(EstatAvio.FLYING)){
                                     this.cmPosition+=this.speed;
                                     this.speed-=0.1;
+                                            
                                    
                                    
                                 }
-                                if(this.speed<=20){
-                                    this.estado=EstatAvio.RUN;
-                                    this.cmPosition+=this.speed;
-                                   
-                                }
+                               
                                 
                                
 			} catch (Exception e) {
