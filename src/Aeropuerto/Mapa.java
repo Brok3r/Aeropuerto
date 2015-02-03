@@ -232,7 +232,7 @@ boolean bol=true;
     }
 
     public void paintTerminal(Graphics g) {
-
+        
         paintTerm(g, factorX, factorY, offsetX, offsetY);
 
     }

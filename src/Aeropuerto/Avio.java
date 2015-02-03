@@ -3,9 +3,7 @@ package Aeropuerto;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 import javax.swing.ImageIcon;
 
@@ -320,7 +318,7 @@ public class Avio extends Thread {
         
         if(way instanceof VCarrer){
             
-        iniY = (int) ((((this.way.cmFinY + this.cmPosition) / 2) / factorY) + offsetY);
+        iniY = (int) ((((this.way.cmIniY + this.cmPosition) / 2) / factorY) + offsetY);
         finY = (int) (((this.cmWidth) / factorY));
         
         iniX = (int) (((this.way.cmIniX ) / factorX) + offsetX);
@@ -346,14 +344,14 @@ public class Avio extends Thread {
         while (true) {
             try {
                 Thread.sleep(7);
-                System.out.println("posiscion: " + this.cmPosition);
+//                System.out.println("posiscion: " + this.cmPosition);
                 if (this.speed <= 50) {
                     this.estado = EstatAvio.RUN;
 
                     this.cmPosition += this.speed;
 
                     if (this.estaEnCruce()) {
-                        System.out.println("            ----------------------------------                      Cruceee");
+                        System.out.println(" ----------------------------------                      Cruceee");
 
                         CrossRoad cr = this.recuperarCrossRoad();
                         VCarrer c = (VCarrer) cr.getVCarrer();
