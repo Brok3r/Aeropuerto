@@ -149,10 +149,10 @@ boolean bol=true;
     }
 
     private void loadCarrers() {
-
+        //String idWay, int cmWayWidth, int cmWayMark, int cmLong, int cmPosIniX, int cmPosIniY)
         this.carrers.add(new HCarrer("H1", this.cmCarrerWidth, this.cmCarrerMark, 27000, 1500, 1000));
         this.carrers.add(new HCarrer("H2", this.cmCarrerWidth, this.cmCarrerMark, 27000, 1500, 5000));
-
+        
     //	this.carrers.add(new HCarrer("H3", this.cmCarrerWidth/2, this.cmCarrerMark/2, 21000, 4000, 11500));
         // id, cmquetecarrer(amplada), marcad'enmig, longitud, posicio inicia x, pos inicia x
         //59800,0,0

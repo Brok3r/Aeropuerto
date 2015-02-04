@@ -4,11 +4,13 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 
-
 import javax.swing.ImageIcon;
 
 public class Avio extends Thread {
 
+  CrossRoad crFrente;
+  CrossRoad crActual ;
+  Direction direct;    
     public static enum EstatAvio {
 
         HIDE, STOP, RUN, TAKINGOFF, LANDING, FLYING
@@ -121,7 +123,7 @@ public class Avio extends Thread {
     public Direction getDirection() {
 
         // TODO Auto-generated method stub
-        return null;
+        return this.direction;
     }
 
     /* 
@@ -146,7 +148,7 @@ public class Avio extends Thread {
     private Direction direction;
     private EstatAvio estado;
     private Orientation orientation;
-    
+
     public Avio(String idAvio, Carrer way) {
 
         this.idAvio = idAvio;
@@ -160,9 +162,8 @@ public class Avio extends Thread {
         this.speedInCmSecond = 0;
         this.estado = EstatAvio.FLYING;
         this.setWay(way);
-        this.setDirection(Direction.FORWARD);
-        this.orientation = Orientation.EAST;
-        
+        this.direction= Direction.FORWARD;
+
         try {
             this.imgCar = new ImageIcon(getClass().getResource("avio.png")).getImage();
         } catch (Exception e) {
@@ -305,38 +306,32 @@ public class Avio extends Thread {
     public synchronized void paint(Graphics g, float factorX, float factorY, int offsetX, int offsetY) {
         int iniX, iniY, finX, finY;
 
-        if(way instanceof HCarrer){
-        iniY = (int) ((((this.way.cmFinY + this.way.cmIniY) / 2) / factorY) + offsetY);
-        finY = (int) (((this.cmWidth) / factorY));
+        if (way instanceof HCarrer) {
+           iniY=(int)((((this.way.cmFinY+this.way.cmIniY)/2)/factorY)+offsetY);
+            finY=(int)(((this.cmWidth)/factorY));
 
-        iniX = (int) (((this.way.cmIniX + this.cmPosition) / factorX) + offsetX);
-        finX = (int) (((this.cmLong) / factorX));
-        
-         imgCar = AvioGraphics.getCarImage(this,this.getOrientation());
-        g.drawImage(this.imgCar, iniX, iniY, finX, finY, null);
+            iniX=(int)(((this.way.cmIniX+this.cmPosition)/factorX)+offsetX);
+            finX=(int)(((this.cmLong)/factorX));
+
+            imgCar = AvioGraphics.getCarImage(this, orientation.WEST);
+            g.drawImage(this.imgCar, iniX, iniY, finX, finY, null);
         }
-        
-        if(way instanceof VCarrer){
-            
-        iniY = (int) ((((this.way.cmIniY + this.cmPosition) / 2) / factorY) + offsetY);
-        finY = (int) (((this.cmWidth) / factorY));
-        
-        iniX = (int) (((this.way.cmIniX ) / factorX) + offsetX);
-        finX = (int) (((this.cmLong) / factorX));
-        
-        imgCar = AvioGraphics.getCarImage(this,this.orientation);
-        g.drawImage(this.imgCar, iniX, iniY, finX, finY, null);
+
+        if (way instanceof VCarrer) {
+            iniX = (int) ((((this.way.cmFinX + this.way.cmIniX) / 2) / factorX) + offsetX);
+            finX = (int) (((this.cmWidth) / factorX));
+
+            iniY = (int) (((this.way.cmIniY + this.cmPosition) / factorY) + offsetY);
+            finY = (int) (((this.cmLong) / factorY));
+
+             imgCar = AvioGraphics.getCarImage(this,orientation.SOUDTH);
+             g.drawImage(this.imgCar, iniX, iniY, finX, finY, null);
+//            g.setColor(Color.MAGENTA);
+//            g.fillRect(iniX, iniY, finX, finY);
+//
+//            g.setColor(Color.BLACK);
+//            g.drawRect(iniX, iniY, finX, finY);
         }
-       
-
-       
-
-        /*
-         g.setColor(Color.MAGENTA);
-         g.fillRect(iniX, iniY, finX, finY);
-	       
-         g.setColor(Color.BLACK);
-         g.drawRect(iniX, iniY, finX, finY);*/
     }
 
     @Override
@@ -349,25 +344,33 @@ public class Avio extends Thread {
                     this.estado = EstatAvio.RUN;
 
                     this.cmPosition += this.speed;
-
+                 
+                    
                     if (this.estaEnCruce()) {
-                        System.out.println(" ----------------------------------                      Cruceee");
-
-                        CrossRoad cr = this.recuperarCrossRoad();
-                        VCarrer c = (VCarrer) cr.getVCarrer();
-                        if(!c.equals(this.getWay())){
-                        this.setWay(c);
-                        this.setOrientation(Orientation.SOUDTH);
-                        this.setDirection(Direction.FORWARD);
-                        this.cmPosition= c.getCmPosIniY();
+                           
+                    
+                         System.out.println(" ----------------------------------                      Cruceee");
+                         if(this.way.inFrontCrossRoad(this) != null) 
+                             crFrente= this.way.inFrontCrossRoad(this);
+                         
+                         crActual = this.recuperarCrossRoad();
+                                            
+                        //Carrer c = (VCarrer) cr.getVCarrer();
+                        Carrer c = crActual.getRandomCarrer(this.getWay());
                         
-//                                this.way.getCmPosition(          
-//                                        c.getCmPosX(this.cmPosition, this.direction),
-//                                        c.getCmPosY(this.cmPosition, this.direction),
-//                                        this.direction);
-//                            
-                        }
+                        if (crFrente == crActual) {
+                            System.out.println("Cambio de carril "+this.getWay().getId()+" a "+c.getId());
                        
+                            this.setWay(c);
+                            this.setOrientation(Orientation.SOUDTH);
+                         
+                            this.cmPosition= this.way.getCmPosition(
+                                            c.getCmPosX(this.cmPosition, this.direction),
+                                            c.getCmPosY(this.cmPosition, this.direction),
+                                            this.direction);
+
+                      }
+
 //                                       this.setWay(this.getWay().intersectedCrossRoad(this.getCmPosition()).getVCarrer()); //cambio de carretera 
 //                                    CrossRoad cr = this.getWay().intersectedCrossRoad(this.getCmPosition());
 //                                       System.out.println(cr.getVCarrer().idWay);

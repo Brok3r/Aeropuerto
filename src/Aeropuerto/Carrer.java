@@ -86,9 +86,10 @@ public abstract class Carrer {
     }
 
     public abstract int distanceToCrossRoadInCm(CrossRoad cr, Avio Avio);
-
+    public abstract int getCmPosX(int cmPosition, Direction direction);
+    public abstract int getCmPosY(int cmPosition, Direction direction);
     public abstract CrossRoad inFrontCrossRoad(Avio Avio);
-
+  
     public synchronized Avio inFrontAvio(Avio Avio) {
         ArrayList<Avio> AvioList;
         Avio inFrontAvio, actualAvio;
