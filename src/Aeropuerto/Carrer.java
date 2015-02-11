@@ -18,15 +18,16 @@ public abstract class Carrer {
     protected ArrayList<CrossRoad> crossRoads = new ArrayList();
     protected ArrayList<Integer> forwardEntryPoint = new ArrayList();
     protected ArrayList<Integer> backwardEntryPoint = new ArrayList();
-
-    public Carrer(String idWay, int cmWayWidth, int cmWayMark, int cmLong, int cmPosIniX, int cmPosIniY) {
+    protected Direction dire;
+    
+    public Carrer(String idWay, int cmWayWidth, int cmWayMark, int cmLong, int cmPosIniX, int cmPosIniY, Direction direc) {
         this.idWay = idWay;
         this.cmLong = cmLong;
         this.cmWidth = cmWayWidth;
         this.cmMark = cmWayMark;
         this.cmIniX = cmPosIniX;
         this.cmIniY = cmPosIniY;
-
+        this.dire = direc;
         this.createDefaultEntryPoints();
     }
 
@@ -55,10 +56,10 @@ public abstract class Carrer {
         return this.cmIniY;
     }
 
-    public int getEntryPoint(Direction direction) {
+    public int getEntryPoint(Direction direc) {
         int cmPosition = 0;
 
-        switch (direction) {
+        switch (dire) {
             case FORWARD:
                 cmPosition = this.forwardEntryPoint.get(0);
                 break;
@@ -66,7 +67,7 @@ public abstract class Carrer {
                 cmPosition = this.backwardEntryPoint.get(0);
                 break;
             default:
-                throw new AssertionError(direction.name());
+                throw new AssertionError(dire.name());
         }
 
         return cmPosition;

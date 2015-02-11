@@ -16,11 +16,13 @@ public class HCarrer extends Carrer {
     private CrossRoad cr; //Preguntar a jaume porque tiene solo un cr y no una ArrayList
     private ArrayList<CrossRoad> crossRoads = new ArrayList<>();
 
-    public HCarrer(String idWay, int cmWayWidth, int cmWayMark, int cmLong, int cmPosIniX, int cmPosIniY) {
-        super(idWay, cmWayWidth, cmWayMark, cmLong, cmPosIniX, cmPosIniY);
+    public HCarrer(String idWay, int cmWayWidth, int cmWayMark, int cmLong, int cmPosIniX, int cmPosIniY,Direction direc) {
+        super(idWay, cmWayWidth, cmWayMark, cmLong, cmPosIniX, cmPosIniY,direc);
 
         this.cmFinX = this.cmIniX + this.cmLong;
         this.cmFinY = this.cmIniY + this.cmWidth;
+        
+        
     }
 
     @Override

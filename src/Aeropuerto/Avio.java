@@ -15,7 +15,7 @@ public class Avio extends Thread {
 
         HIDE, STOP, RUN, TAKINGOFF, LANDING, FLYING
     };
-
+  
     public static enum Orientation {
 
         NORTH(Direction.BACKWARD),
@@ -148,6 +148,9 @@ public class Avio extends Thread {
     private Direction direction;
     private EstatAvio estado;
     private Orientation orientation;
+    private String[] aterrizar = {"H1","V1","H2"};
+    
+            
 
     public Avio(String idAvio, Carrer way) {
 
@@ -163,7 +166,7 @@ public class Avio extends Thread {
         this.estado = EstatAvio.FLYING;
         this.setWay(way);
         this.direction= Direction.FORWARD;
-
+        
         try {
             this.imgCar = new ImageIcon(getClass().getResource("avio.png")).getImage();
         } catch (Exception e) {
@@ -333,61 +336,117 @@ public class Avio extends Thread {
 //            g.drawRect(iniX, iniY, finX, finY);
         }
     }
-
+     Carrer c;
     @Override
     public void run() {
         while (true) {
             try {
                 Thread.sleep(7);
 //                System.out.println("posiscion: " + this.cmPosition);
-                if (this.speed <= 50) {
-                    this.estado = EstatAvio.RUN;
-
-                    this.cmPosition += this.speed;
-                 
+               
                     
-                    if (this.estaEnCruce()) {
+                    this.estado = EstatAvio.RUN;
+                    
+                    if (this.direction==Direction.FORWARD)this.cmPosition += this.speed;
+else this.cmPosition-=this.speed;
+                   
+
+                      if (this.estaEnCruce()) {
+                        crActual = recuperarCrossRoad();
+                         if (crActual.getCarrer(way).getId().equals("V2")){
+                             System.out.println("___ Cruce");
+                             Carrer anterior = way;
+                             this.way = crActual.getCarrer(way);
+                             this.direction = way.dire;
+                            this.cmPosition = this.way.getCmPosition(
+                            anterior.getCmPosX(this.cmPosition, this.direction),
+                            anterior.getCmPosY(this.cmPosition, this.direction),
+                            this.direction);
+                         }
+                          if (crActual.getCarrer(way).getId().equals("H2")){
+                             System.out.println("___ Cruce H2");
+                             Carrer anterior = way;
+                             this.way = crActual.getCarrer(way);
+                             //this.direction = way.dire;
+                            this.direction=Direction.FORWARD;
+                            this.cmPosition = this.way.getCmPosition(
+                            anterior.getCmPosX(this.cmPosition, this.direction),
+                            anterior.getCmPosY(this.cmPosition, this.direction),
+                            this.direction);
+                            while (this.estaEnCruce()){
+                                Thread.sleep(7);
+                                	if (this.direction==Direction.FORWARD)this.cmPosition += this.speed;
+                                            else this.cmPosition-=this.speed;
+                          
+                                
+                            }
+                            
+                            
+                         }
+                    
+//                    if (this.esCruce()) {
+// cruceActual = quinCruce();
+// if (numGir < rutaLanding.size()){
+// if (cruceActual.getCarrer(way).getId().equals(rutaLanding.get(numGir))){
+// Carrer anterior = way;
+// this.way = cruceActual.getCarrer(way);
+// this.direction = way.direccio;
+// this.cmPosition = this.way.getCmPosition(
+// anterior.getCmPosX(this.cmPosition, this.direction),
+// anterior.getCmPosY(this.cmPosition, this.direction),
+// this.direction);
+                    
                            
                     
-                         System.out.println(" ----------------------------------                      Cruceee");
-                         if(this.way.inFrontCrossRoad(this) != null) 
-                             crFrente= this.way.inFrontCrossRoad(this);
-                         
-                         crActual = this.recuperarCrossRoad();
-                                            
-                        //Carrer c = (VCarrer) cr.getVCarrer();
-                        Carrer c = crActual.getRandomCarrer(this.getWay());
-                        
-                        if (crFrente == crActual) {
-                            System.out.println("Cambio de carril "+this.getWay().getId()+" a "+c.getId());
-                       
-                            this.setWay(c);
-                            this.setOrientation(Orientation.SOUDTH);
-                         
-                            this.cmPosition= this.way.getCmPosition(
-                                            c.getCmPosX(this.cmPosition, this.direction),
-                                            c.getCmPosY(this.cmPosition, this.direction),
-                                            this.direction);
-
-                      }
-
-//                                       this.setWay(this.getWay().intersectedCrossRoad(this.getCmPosition()).getVCarrer()); //cambio de carretera 
-//                                    CrossRoad cr = this.getWay().intersectedCrossRoad(this.getCmPosition());
-//                                       System.out.println(cr.getVCarrer().idWay);
-//                                       System.out.println("hola k ase");
-//                                    this.setCmPosition(this.getWay().intersectedCrossRoad(this.getCmPosition()).getVCarrer().getEntryPoint(this.getDirection()));
-//                                    this.setDirection(Avio.Direction.FORWARD);
-                    }
+                    
+                    
+                    
+// numGir++;
+ //}//if es cruce que cerc
+                    
+                  
+//                            
+//                         System.out.println(" ----------------------------------                      Cruceee");
+//                         if(this.way.inFrontCrossRoad(this) != null) {
+//                            crFrente= this.way.inFrontCrossRoad(this);
+//                         }
+//                       
+//                         
+//                        crActual = this.recuperarCrossRoad();
+//                                            
+//                        //Carrer c = (VCarrer) cr.getVCarrer();
+//                       
+//                        if(crActual.getHCarrer().idWay.equals("H1")) {
+//                             c = crActual.getVCarrer();
+//                        }
+//                        else if(crActual.getVCarrer().idWay.equals("V2")) {
+//                            c = crActual.getHCarrer();
+//                            System.out.println(c.idWay+" <-- id");
+//                    }
+//                        
+//                       
+//                            this.setWay(c);
+//                            Carrer anterior=  this.getWay();
+//                            this.direction = this.way.direction;
+//                            this.cmPosition= 
+//                                    this.way.getCmPosition(
+//                                            anterior.getCmPosX(this.cmPosition, this.direction),
+//                                            anterior.getCmPosY(this.cmPosition, this.direction),
+//                                            this.direction);
+//                      
+//
+////                   
+//                    }
                 }
 
-                if (this.estado.equals(EstatAvio.FLYING)) {
-                    this.cmPosition += this.speed;
-                    this.speed -= 0.1;
-
-                }
+//                if (this.estado.equals(EstatAvio.FLYING)) {
+//                    this.cmPosition += this.speed;
+//                    this.speed -= 0.1;
+//
+//                }
 
             } catch (Exception e) {
-                // TODO: handle exception
+                System.out.println(e.getMessage());
             }
         }
     }

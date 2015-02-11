@@ -64,6 +64,13 @@ public class CrossRoad {
         return this.vCarrer;
     }
     
+    public Carrer getCarrer(Carrer c){
+        if(c.equals(vCarrer))
+            return hCarrer;
+        else
+            return vCarrer;
+    }
+    
     public Direction getRandomDirection(Carrer Carrer) {
         int randomDirection;
 

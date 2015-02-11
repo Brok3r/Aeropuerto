@@ -5,7 +5,7 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class Finger {
+public class Finger extends VCarrer{
 	
 	public static enum Estat {OCUPAT, BUID, RESERVAT};
 	Estat estat;
@@ -15,25 +15,19 @@ public class Finger {
 	private int num;
 
 	
-	public Finger(Estat estat, int posicioX, int posicioY, int num) {
-		super();
+	public Finger(String idWay, int cmWayWidth, int cmWayMark, int cmLong, int cmPosIniX, int cmPosIniY,Avio.Direction direction) {
+        super(idWay, cmWayWidth, cmWayMark, cmLong, cmPosIniX, cmPosIniY,direction);
+
+        this.cmFinX = this.cmIniX + this.cmLong;
+        this.cmFinY = this.cmIniY + this.cmWidth;
+        
 		this.estat = estat;
 		this.posicioX = posicioX;
 		this.posicioY = posicioY;
 		this.num = num;
 	}
 
-	public Finger() {
-	
-		// TODO Auto-generated constructor stub
-		
-		this.estat = estat.BUID;
-		//this.avio=avio;
-		this.posicioX = posicioX;
-		this.posicioY = posicioY;
-		this.num=num;
-	
-	}
+
 
 	public Estat getEstat() {
 		return estat;

@@ -1,5 +1,6 @@
 package Aeropuerto;
 
+import Aeropuerto.Avio.Direction;
 import Aeropuerto.Avio.EstatAvio;
 import java.awt.Canvas;
 import java.awt.Color;
@@ -13,6 +14,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+/*
+
+en controlador se crean los fingers y un metodo para pintar que luego llamará el mapa.
+
+*/
 import javax.imageio.ImageIO;
 
 import Aeropuerto.Finger;
@@ -61,7 +67,7 @@ public class Mapa extends Canvas implements Runnable {
         this.loadCarrers();
         this.calculateCrossRoads();
 
-        this.loadFinger();
+//        this.loadFinger();
 
         Dimension d = new Dimension(800, 400); //300,172
         this.setPreferredSize(d);
@@ -150,14 +156,14 @@ boolean bol=true;
 
     private void loadCarrers() {
         //String idWay, int cmWayWidth, int cmWayMark, int cmLong, int cmPosIniX, int cmPosIniY)
-        this.carrers.add(new HCarrer("H1", this.cmCarrerWidth, this.cmCarrerMark, 27000, 1500, 1000));
-        this.carrers.add(new HCarrer("H2", this.cmCarrerWidth, this.cmCarrerMark, 27000, 1500, 5000));
+        this.carrers.add(new HCarrer("H1", this.cmCarrerWidth, this.cmCarrerMark, 27000, 1500, 1000, Direction.FORWARD));
+        this.carrers.add(new HCarrer("H2", this.cmCarrerWidth, this.cmCarrerMark, 27000, 1500, 5000, Direction.BACKWARD));
         
     //	this.carrers.add(new HCarrer("H3", this.cmCarrerWidth/2, this.cmCarrerMark/2, 21000, 4000, 11500));
         // id, cmquetecarrer(amplada), marcad'enmig, longitud, posicio inicia x, pos inicia x
         //59800,0,0
-        this.carrers.add(new VCarrer("V1", this.cmCarrerWidth, this.cmCarrerMark, 4000, 1500, 1000));
-        this.carrers.add(new VCarrer("V2", this.cmCarrerWidth, this.cmCarrerMark, 4800, 28000, 1000));
+        this.carrers.add(new VCarrer("V1", this.cmCarrerWidth, this.cmCarrerMark, 4000, 1500, 1000,Direction.BACKWARD));
+        this.carrers.add(new VCarrer("V2", this.cmCarrerWidth, this.cmCarrerMark, 4800, 28000, 1000, Direction.FORWARD));
 
     //	this.carrers.add(new VCarrer("V3", this.cmCarrerWidth, this.cmCarrerMark, 10800, 3500, 1100));
         //	this.carrers.add(new VCarrer("V4", this.cmCarrerWidth, this.cmCarrerMark, 10800, 25000, 1100));
@@ -305,17 +311,17 @@ boolean bol=true;
         this.zoomLevel = 1;
         this.setFactorXY();
     }
-
-    public void loadFinger() {
-
-        int x = 5000;
-
-        for (int i = 0; i < 8; i++) {
-            fingers.add(new Finger(Estat.BUID, x, 12500, i));
-            x = x + 2000;
-        }
-
-    }
+//
+//    public void loadFinger() {
+//
+//        int x = 5000;
+//
+//        for (int i = 0; i < 8; i++) {
+//            fingers.add(new Finger(Estat.BUID, x, 12500, i));
+//            x = x + 2000;
+//        }
+//
+//    }
 
     public void paintTerm(Graphics g, float factorX, float factorY, int offsetX, int offsetY) {
 

@@ -15,14 +15,14 @@ public class VCarrer extends Carrer {
 
     private CrossRoad cr;
 
-    public VCarrer(String idWay, int cmWayWidth, int cmWayMark, int cmLong, int cmPosIniX, int cmPosIniY) {
+    public VCarrer(String idWay, int cmWayWidth, int cmWayMark, int cmLong, int cmPosIniX, int cmPosIniY, Direction direction) {
 
-        super(idWay, cmWayWidth, cmWayMark, cmLong, cmPosIniX, cmPosIniY);
+        super(idWay, cmWayWidth, cmWayMark, cmLong, cmPosIniX, cmPosIniY,direction);
 
         this.cmFinX = this.cmIniX + this.cmWidth;
         this.cmFinY = this.cmIniY + this.cmLong;
     }
-
+    
     public void addCrossRoad(CrossRoad cr) {
         this.crossRoads.add(cr);
 
