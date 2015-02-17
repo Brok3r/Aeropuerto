@@ -149,10 +149,10 @@ public class Avio extends Thread {
     private EstatAvio estado;
     private Orientation orientation;
     private String[] aterrizar = {"H1","V1","H2"};
-    
+    private Finger finger;
             
 
-    public Avio(String idAvio, Carrer way) {
+    public Avio(String idAvio, Carrer way, Finger finger ) {
 
         this.idAvio = idAvio;
         this.cmLong = 800;
@@ -166,6 +166,8 @@ public class Avio extends Thread {
         this.estado = EstatAvio.FLYING;
         this.setWay(way);
         this.direction= Direction.FORWARD;
+        this.finger= finger;
+        
         
         try {
             this.imgCar = new ImageIcon(getClass().getResource("avio.png")).getImage();
@@ -301,11 +303,15 @@ public class Avio extends Thread {
     public boolean estaEnCruce() {
         return this.getWay().insideAnyCrossRoad(this.getCmPosition());
     }
+  public boolean estaEnFinger() {
+      return this.finger.insideAnyCrossRoad(cmPosition);
+
+    }
 
     public CrossRoad recuperarCrossRoad() {
         return this.getWay().intersectedCrossRoad(this.getCmPosition());
     }
-
+    
     public synchronized void paint(Graphics g, float factorX, float factorY, int offsetX, int offsetY) {
         int iniX, iniY, finX, finY;
 
@@ -350,8 +356,10 @@ public class Avio extends Thread {
                     if (this.direction==Direction.FORWARD)this.cmPosition += this.speed;
 else this.cmPosition-=this.speed;
                    
-
+                      
+                      if(this.estaEnFinger()) { System.out.println("FINGEEER");}
                       if (this.estaEnCruce()) {
+                          
                         crActual = recuperarCrossRoad();
                          if (crActual.getCarrer(way).getId().equals("V2")){
                              System.out.println("___ Cruce");
@@ -367,12 +375,12 @@ else this.cmPosition-=this.speed;
                              System.out.println("___ Cruce H2");
                              Carrer anterior = way;
                              this.way = crActual.getCarrer(way);
-                             //this.direction = way.dire;
-                            this.direction=Direction.FORWARD;
+                            
                             this.cmPosition = this.way.getCmPosition(
                             anterior.getCmPosX(this.cmPosition, this.direction),
                             anterior.getCmPosY(this.cmPosition, this.direction),
                             this.direction);
+                            this.direction = way.dire; // despues de cambiar la posición, porque influye en la dirección anterior...
                             while (this.estaEnCruce()){
                                 Thread.sleep(7);
                                 	if (this.direction==Direction.FORWARD)this.cmPosition += this.speed;

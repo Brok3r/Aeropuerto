@@ -16,9 +16,9 @@ import java.util.Iterator;
 
 /*
 
-en controlador se crean los fingers y un metodo para pintar que luego llamará el mapa.
+ en controlador se crean los fingers y un metodo para pintar que luego llamará el mapa.
 
-*/
+ */
 import javax.imageio.ImageIO;
 
 import Aeropuerto.Finger;
@@ -43,7 +43,6 @@ public class Mapa extends Canvas implements Runnable {
     //private Traffic traffic;
     private ArrayList<Carrer> carrers;
     private ArrayList<CrossRoad> crossroads;
-    private ArrayList<Finger> fingers;
     private Controlador controlador;
 
     public Mapa(int cityCmWidth, int cityCmHeight, int mapPixWidth, int mapPixHeight) {
@@ -62,12 +61,11 @@ public class Mapa extends Canvas implements Runnable {
 
         this.carrers = new ArrayList<Carrer>();
         this.crossroads = new ArrayList<CrossRoad>();
-        this.fingers = new ArrayList<Finger>();
-
+        
+        
         this.loadCarrers();
-        this.calculateCrossRoads();
-
-//        this.loadFinger();
+        
+        
 
         Dimension d = new Dimension(800, 400); //300,172
         this.setPreferredSize(d);
@@ -77,6 +75,7 @@ public class Mapa extends Canvas implements Runnable {
         } catch (IOException e) {
             System.out.println("Img Error: not found bg.jpg");
         }
+       
     }
 
     public ArrayList<Carrer> getCarrers() {
@@ -114,24 +113,25 @@ public class Mapa extends Canvas implements Runnable {
         return true;
     }
 // _____________________   MOTOR GRAFICO
-boolean bol=true;
+    boolean bol = true;
+
     @Override
-    public    void run() {
+    public void run() {
         this.createBufferStrategy(2);
 
         while (!Aeroport.isEnd()) {
             this.paint();
-            }
-            do {
-                try {
-                    Thread.sleep(7); // nano -> ms
-                } catch (InterruptedException ex) {
-                }
-            } while (Aeroport.isPaused());
         }
-    
+        do {
+            try {
+                Thread.sleep(7); // nano -> ms
+            } catch (InterruptedException ex) {
+            }
+        } while (Aeroport.isPaused());
+    }
+
 //_______________________-
-    private void calculateCrossRoads() {
+    public void calculateCrossRoads() {
         Iterator<Carrer> itrCarrers1;
         Iterator<Carrer> itrCarrers2;
         Carrer auxCarrer1, auxCarrer2;
@@ -152,22 +152,25 @@ boolean bol=true;
                 }
             }
         }
+       for (int i = 0; i < controlador.fingers.size(); i++) {   
+this.addCrossRoad(new CrossRoad(this.carrers.get(1), controlador.fingers.get(i)));
+}
     }
 
     private void loadCarrers() {
         //String idWay, int cmWayWidth, int cmWayMark, int cmLong, int cmPosIniX, int cmPosIniY)
         this.carrers.add(new HCarrer("H1", this.cmCarrerWidth, this.cmCarrerMark, 27000, 1500, 1000, Direction.FORWARD));
         this.carrers.add(new HCarrer("H2", this.cmCarrerWidth, this.cmCarrerMark, 27000, 1500, 5000, Direction.BACKWARD));
-        
-    //	this.carrers.add(new HCarrer("H3", this.cmCarrerWidth/2, this.cmCarrerMark/2, 21000, 4000, 11500));
+
+        //	this.carrers.add(new HCarrer("H3", this.cmCarrerWidth/2, this.cmCarrerMark/2, 21000, 4000, 11500));
         // id, cmquetecarrer(amplada), marcad'enmig, longitud, posicio inicia x, pos inicia x
         //59800,0,0
-        this.carrers.add(new VCarrer("V1", this.cmCarrerWidth, this.cmCarrerMark, 4000, 1500, 1000,Direction.BACKWARD));
+        this.carrers.add(new VCarrer("V1", this.cmCarrerWidth, this.cmCarrerMark, 4000, 1500, 1000, Direction.BACKWARD));
         this.carrers.add(new VCarrer("V2", this.cmCarrerWidth, this.cmCarrerMark, 4800, 28000, 1000, Direction.FORWARD));
 
     //	this.carrers.add(new VCarrer("V3", this.cmCarrerWidth, this.cmCarrerMark, 10800, 3500, 1100));
         //	this.carrers.add(new VCarrer("V4", this.cmCarrerWidth, this.cmCarrerMark, 10800, 25000, 1100));
-    //	this.carrers.add(new VCarrer("V4", this.cmCarrerWidth, this.cmCarrerMark, 10800, 14750, 1100));
+        //	this.carrers.add(new VCarrer("V4", this.cmCarrerWidth, this.cmCarrerMark, 10800, 14750, 1100));
 //
 //    	this.carrers.add(new VCarrer("F1", this.cmCarrerWidth/2, this.cmCarrerMark/2, 2000, 5900, 11500));
 //    	this.carrers.add(new VCarrer("F2", this.cmCarrerWidth/2, this.cmCarrerMark/2, 2000, 7900, 11500));
@@ -218,30 +221,27 @@ boolean bol=true;
 
         gg.drawImage(this.imgMap, 0, 0, this.mapWidth, this.mapHeigth, null);
         this.controlador.paintAvions(gg, factorX, factorY, offsetX, offsetY);
+        this.controlador.paintFingers(gg,factorX, factorY, offsetX, offsetY);
         bs.show();
-
+        
         gg.dispose();
     }
 
     public void paintBackgroud(Graphics g) {
         g.drawImage(this.imgBg, 0, 0, null);
     }
+// en controlador
+//    public void paintFingers(Graphics g) {
+//
+//        Iterator<Finger> itr = this.fingers.iterator();
+//
+//        while (itr.hasNext()) {
+//            itr.next().paint(g, this.factorX, this.factorY, this.offsetX, this.offsetY);
+//        }
+//
+//    }
 
-    public void paintFingers(Graphics g) {
-
-        Iterator<Finger> itr = this.fingers.iterator();
-
-        while (itr.hasNext()) {
-            itr.next().paint(g, this.factorX, this.factorY, this.offsetX, this.offsetY);
-        }
-        
-    }
-
-    public void paintTerminal(Graphics g) {
-        
-        paintTerm(g, factorX, factorY, offsetX, offsetY);
-
-    }
+  
 
     public void paintCrossRoads(Graphics g) {
         Iterator<CrossRoad> itr = this.crossroads.iterator();
@@ -250,7 +250,7 @@ boolean bol=true;
             itr.next().paint(g, this.factorX, this.factorY, this.offsetX, this.offsetY);
         }
     }
-
+    
     public synchronized void paintImgMap() {
         if ((this.mapWidth <= 0) || (this.mapHeigth <= 0)) {
             System.out.println("Map size error: (" + this.mapWidth + "," + this.mapHeigth + ")");
@@ -263,8 +263,8 @@ boolean bol=true;
         this.paintBackgroud(g);
         this.paintCarrers(g);
         this.paintCrossRoads(g);
-        this.paintFingers(g);
-      //  this.paintTerminal(g);
+        this.controlador.paintFingers(g,this.factorX, this.factorY, this.offsetX, this.offsetY);
+    
 
         g.dispose();
 
@@ -285,7 +285,6 @@ boolean bol=true;
             itr.next().paint(g, this.factorX, this.factorY, this.offsetX, this.offsetY);
         }
     }
-
 
     public void zoomIn() {
         this.zoomIn(0.01f);
@@ -311,38 +310,11 @@ boolean bol=true;
         this.zoomLevel = 1;
         this.setFactorXY();
     }
-//
-//    public void loadFinger() {
-//
-//        int x = 5000;
-//
-//        for (int i = 0; i < 8; i++) {
-//            fingers.add(new Finger(Estat.BUID, x, 12500, i));
-//            x = x + 2000;
-//        }
-//
-//    }
 
-    public void paintTerm(Graphics g, float factorX, float factorY, int offsetX, int offsetY) {
 
-        int iniX, iniY, finX, finY;
-
-        iniX = (int) ((2000 / factorX) + offsetX);
-        iniY = (int) ((14000 / factorY) + offsetY);
-        finX = (int) (25000 / factorX);
-        finY = (int) (6000 / factorY);
-
-        // Paint crossroad
-        g.setColor(Color.GRAY);
-        g.fillRect(iniX, iniY, finX, finY);
-        g.setColor(Color.BLACK);
-        g.drawRect(iniX, iniY, finX, finY);
-
-    }
+   
 
     public void setControlador(Controlador c) {
-		// TODO Auto-generated method stub
-
         this.controlador = c;
     }
 

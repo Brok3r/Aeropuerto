@@ -27,7 +27,7 @@ public class Aeroport extends JFrame implements Runnable, MouseWheelListener, Ac
     private JTable tStatistics;
     private Mapa map;
     private Carrer carrer;
-    private Controlador traffic;
+    private Controlador controlador;
     private static volatile boolean pauseCity;
     private static volatile boolean endCity;
 
@@ -38,14 +38,14 @@ public class Aeroport extends JFrame implements Runnable, MouseWheelListener, Ac
 
         this.createFrame();
         
-        traffic = new Controlador(map.getCarrers());
-        
-        this.map.setControlador(this.traffic);
-      
+        controlador = new Controlador(map.getCarrers());
+         
+        this.map.setControlador(this.controlador);
+        this.map.calculateCrossRoads();
         this.setLocationRelativeTo(null);
-
+        
         new Thread(this.map, "Hilo 1").start();
-        new Thread(this.traffic, "Hilo 2").start();
+        new Thread(this.controlador, "Hilo 2").start();
         this.play(); // Arracar el simul·lador
         new Thread(this, "Hilo 3").start();
     }
