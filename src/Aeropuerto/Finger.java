@@ -8,20 +8,24 @@ import java.util.Iterator;
 
 public class Finger extends VCarrer {
 
+   
     public static enum Estat {
 
-        OCUPAT, BUID, RESERVAT
+        OCUPADO, VACIO, RESERVADO
     };
     Estat estat;
     private Avio avio;
     private int posicioX;
     private int posicioY;
     private int num;
-
+    private String idWay;
+    
     public Finger(String idWay, int cmWayWidth, int cmWayMark, int cmLong, int cmPosIniX, int cmPosIniY, Avio.Direction direccio) {
         super(idWay, cmWayWidth, cmWayMark, cmLong, cmPosIniX, cmPosIniY, direccio);
         this.cmFinX = this.cmIniX + this.cmWidth;
         this.cmFinY = this.cmIniY + this.cmLong;
+        this.estat = Estat.VACIO;
+        this.idWay = idWay;
     }
 
     public Estat getEstat() {
@@ -31,14 +35,20 @@ public class Finger extends VCarrer {
     public void setEstat(Estat estat) {
         this.estat = estat;
     }
-
+    public void imprimirEstado() {
+        System.out.println("Estado: "+estat);
+        if(estat.equals(Estat.OCUPADO)) System.out.println("Avion: "+avio.getidAvio());
+        }
+    public String getIdWay(){
+        return idWay;
+    }
     /**
      * torna true si el figer esta ocupat
      *
      * @return
      */
     public boolean getOcupado() {
-        return this.estat == estat.OCUPAT || this.estat == estat.RESERVAT;
+        return this.estat == estat.OCUPADO || this.estat == estat.RESERVADO;
 
     }
 
@@ -52,7 +62,7 @@ public class Finger extends VCarrer {
      * @return
      */
     public boolean getBuid() {
-        return estat == estat.BUID;
+        return estat == estat.VACIO;
     }
 
     public Avio getAvio() {

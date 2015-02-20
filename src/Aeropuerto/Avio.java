@@ -3,19 +3,23 @@ package Aeropuerto;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 
 public class Avio extends Thread {
 
-  CrossRoad crFrente;
-  CrossRoad crActual ;
-  Direction direct;    
+    CrossRoad crFrente;
+    CrossRoad crActual;
+    Direction direct;
+
     public static enum EstatAvio {
 
+        BUSCARFINGER, APARCADO,
         HIDE, STOP, RUN, TAKINGOFF, LANDING, FLYING
     };
-  
+
     public static enum Orientation {
 
         NORTH(Direction.BACKWARD),
@@ -148,31 +152,218 @@ public class Avio extends Thread {
     private Direction direction;
     private EstatAvio estado;
     private Orientation orientation;
-    private String[] aterrizar = {"H1","V1","H2"};
+    private String[] aterrizar = {"H1", "V1", "H2"};
     private Finger finger;
-            
+    private Controlador controlador;
 
-    public Avio(String idAvio, Carrer way, Finger finger ) {
+    public Avio(Controlador controlador, String idAvio, Carrer way) {
 
         this.idAvio = idAvio;
         this.cmLong = 800;
         this.cmWidth = 400;
-        this.speed = 60;
+        this.speed = 70;
         this.color = Color.CYAN;
         this.factorX = this.factorY = -1;
         this.course = -1;
         this.cmPosition = 0;
         this.speedInCmSecond = 0;
-        this.estado = EstatAvio.FLYING;
+        this.estado = EstatAvio.BUSCARFINGER;
         this.setWay(way);
-        this.direction= Direction.FORWARD;
-        this.finger= finger;
-        
-        
+        this.direction = Direction.FORWARD;
+        this.controlador = controlador;
+
         try {
             this.imgCar = new ImageIcon(getClass().getResource("avio.png")).getImage();
         } catch (Exception e) {
             // TODO: handle exception
+        }
+    }
+
+    public boolean estaEnCruce() {
+        return this.getWay().insideAnyCrossRoad(this.getCmPosition());
+    }
+
+    public boolean estaEnFinger() {
+        CrossRoad cr = this.way.intersectedCrossRoad(cmPosition);
+        return cr.getVCarrer() instanceof Finger;
+
+    }
+
+    public CrossRoad recuperarCrossRoad() {
+        return this.getWay().intersectedCrossRoad(this.getCmPosition());
+    }
+
+    public void esperar() {
+        while (this.estaEnCruce()) {
+            try {
+                Thread.sleep(7);
+                if (this.direction == Direction.FORWARD) {
+                    this.cmPosition += this.speed;
+                } else {
+                    this.cmPosition -= this.speed;
+                }
+            } catch (InterruptedException ex) {
+            }
+
+        }
+    }
+
+    public synchronized void paint(Graphics g, float factorX, float factorY, int offsetX, int offsetY) {
+        int iniX, iniY, finX, finY;
+        if (way instanceof VCarrer) {
+            iniX = (int) ((((this.way.cmFinX + this.way.cmIniX) / 2) / factorX) + offsetX);
+            finX = (int) (((this.cmWidth) / factorX));
+
+            iniY = (int) (((this.way.cmIniY + this.cmPosition) / factorY) + offsetY);
+            finY = (int) (((this.cmLong) / factorY));
+
+            imgCar = AvioGraphics.getCarImage(this, orientation.SOUDTH);
+            g.drawImage(this.imgCar, iniX, iniY, finX, finY, null);
+
+        }
+        if (way instanceof HCarrer) {
+            iniY = (int) ((((this.way.cmFinY + this.way.cmIniY) / 2) / factorY) + offsetY);
+            finY = (int) (((this.cmWidth) / factorY));
+
+            iniX = (int) (((this.way.cmIniX + this.cmPosition) / factorX) + offsetX);
+            finX = (int) (((this.cmLong) / factorX));
+
+            imgCar = AvioGraphics.getCarImage(this, orientation.WEST);
+            g.drawImage(this.imgCar, iniX, iniY, finX, finY, null);
+        }
+
+    }
+
+    Carrer c;
+
+    @Override
+    public void run() {
+        while (true) {
+            try {
+                Thread.sleep(7);
+                if (this.direction == Direction.FORWARD) {
+                    this.cmPosition += this.speed;
+                } else {
+                    this.cmPosition -= this.speed;
+                }
+
+                if (estado == EstatAvio.BUSCARFINGER) {
+                    controlador.entrar(this);
+                    estado = EstatAvio.RUN;
+
+                }
+//                      if(estado.equals(EstatAvio.STOP)){
+//                          System.out.println("Aparcado.");
+//                      }
+                if (this.estaEnCruce()) {
+
+                    if (this.estaEnFinger()) {
+                        Finger f = (Finger) this.way.intersectedCrossRoad(cmPosition).getVCarrer();
+                       
+                        //  controlador.aparcarAvionEnfinger(this);
+                        this.setEstado(estado.STOP);
+                        if (this == f.getAvio()) {
+
+                            
+                            crActual = recuperarCrossRoad();
+                            Carrer anterior = way;
+                            this.direction = Direction.FORWARD;
+                            this.way = crActual.getCarrer(way);
+                            this.cmPosition = this.way.getCmPosition(
+                                anterior.getCmPosX(this.cmPosition, this.direction),
+                                anterior.getCmPosY(this.cmPosition, this.direction),
+                                this.direction)+1000;
+                            
+                            this.estado = EstatAvio.APARCADO;
+                            
+                            this.sleep(1000);
+
+                        }
+                    }
+                    crActual = recuperarCrossRoad();
+                    if (crActual.getCarrer(way).getId().equals("V2")) {
+                        Carrer anterior = way;
+                        this.way = crActual.getCarrer(way);
+                        this.direction = way.dire;
+                        this.cmPosition = this.way.getCmPosition(
+                                anterior.getCmPosX(this.cmPosition, this.direction),
+                                anterior.getCmPosY(this.cmPosition, this.direction),
+                                this.direction);
+                        esperar();
+                    }
+                    if (crActual.getCarrer(way).getId().equals("H2")) {
+                        Carrer anterior = way;
+                        this.way = crActual.getCarrer(way);
+
+                        this.cmPosition = this.way.getCmPosition(
+                                anterior.getCmPosX(this.cmPosition, this.direction),
+                                anterior.getCmPosY(this.cmPosition, this.direction),
+                                this.direction);
+                        this.direction = way.dire; // despues de cambiar la posición, porque influye en la dirección anterior...
+                        esperar();
+                        /*
+                         if (estado = aparcado) sleep random
+                         controlador.salir
+                            
+                         */
+
+                    }
+
+//                    if (this.esCruce()) {
+// cruceActual = quinCruce();
+// if (numGir < rutaLanding.size()){
+// if (cruceActual.getCarrer(way).getId().equals(rutaLanding.get(numGir))){
+// Carrer anterior = way;
+// this.way = cruceActual.getCarrer(way);
+// this.direction = way.direccio;
+// this.cmPosition = this.way.getCmPosition(
+// anterior.getCmPosX(this.cmPosition, this.direction),
+// anterior.getCmPosY(this.cmPosition, this.direction),
+// this.direction);
+// numGir++;
+                    //}//if es cruce que cerc
+//                            
+//                         System.out.println(" ----------------------------------                      Cruceee");
+//                         if(this.way.inFrontCrossRoad(this) != null) {
+//                            crFrente= this.way.inFrontCrossRoad(this);
+//                         }
+//                       
+//                         
+//                        crActual = this.recuperarCrossRoad();
+//                                            
+//                        //Carrer c = (VCarrer) cr.getVCarrer();
+//                       
+//                        if(crActual.getHCarrer().idWay.equals("H1")) {
+//                             c = crActual.getVCarrer();
+//                        }
+//                        else if(crActual.getVCarrer().idWay.equals("V2")) {
+//                            c = crActual.getHCarrer();
+//                            System.out.println(c.idWay+" <-- id");
+//                    }
+//                        
+//                       
+//                            this.setWay(c);
+//                            Carrer anterior=  this.getWay();
+//                            this.direction = this.way.direction;
+//                            this.cmPosition= 
+//                                    this.way.getCmPosition(
+//                                            anterior.getCmPosX(this.cmPosition, this.direction),
+//                                            anterior.getCmPosY(this.cmPosition, this.direction),
+//                                            this.direction);
+//                      
+//
+////                   
+//                    }
+                }
+
+//                if (this.estado.equals(EstatAvio.FLYING)) {
+//                    this.cmPosition += this.speed;
+//                    this.speed -= 0.1;
+//
+//                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
         }
     }
 
@@ -298,165 +489,6 @@ public class Avio extends Thread {
     public void setPositionInCm(int cmPos) {
         this.cmPosition = cmPos;
 
-    }
-
-    public boolean estaEnCruce() {
-        return this.getWay().insideAnyCrossRoad(this.getCmPosition());
-    }
-  public boolean estaEnFinger() {
-      return this.finger.insideAnyCrossRoad(cmPosition);
-
-    }
-
-    public CrossRoad recuperarCrossRoad() {
-        return this.getWay().intersectedCrossRoad(this.getCmPosition());
-    }
-    
-    public synchronized void paint(Graphics g, float factorX, float factorY, int offsetX, int offsetY) {
-        int iniX, iniY, finX, finY;
-
-        if (way instanceof HCarrer) {
-           iniY=(int)((((this.way.cmFinY+this.way.cmIniY)/2)/factorY)+offsetY);
-            finY=(int)(((this.cmWidth)/factorY));
-
-            iniX=(int)(((this.way.cmIniX+this.cmPosition)/factorX)+offsetX);
-            finX=(int)(((this.cmLong)/factorX));
-
-            imgCar = AvioGraphics.getCarImage(this, orientation.WEST);
-            g.drawImage(this.imgCar, iniX, iniY, finX, finY, null);
-        }
-
-        if (way instanceof VCarrer) {
-            iniX = (int) ((((this.way.cmFinX + this.way.cmIniX) / 2) / factorX) + offsetX);
-            finX = (int) (((this.cmWidth) / factorX));
-
-            iniY = (int) (((this.way.cmIniY + this.cmPosition) / factorY) + offsetY);
-            finY = (int) (((this.cmLong) / factorY));
-
-             imgCar = AvioGraphics.getCarImage(this,orientation.SOUDTH);
-             g.drawImage(this.imgCar, iniX, iniY, finX, finY, null);
-//            g.setColor(Color.MAGENTA);
-//            g.fillRect(iniX, iniY, finX, finY);
-//
-//            g.setColor(Color.BLACK);
-//            g.drawRect(iniX, iniY, finX, finY);
-        }
-    }
-     Carrer c;
-    @Override
-    public void run() {
-        while (true) {
-            try {
-                Thread.sleep(7);
-//                System.out.println("posiscion: " + this.cmPosition);
-               
-                    
-                    this.estado = EstatAvio.RUN;
-                    
-                    if (this.direction==Direction.FORWARD)this.cmPosition += this.speed;
-else this.cmPosition-=this.speed;
-                   
-                      
-                      if(this.estaEnFinger()) { System.out.println("FINGEEER");}
-                      if (this.estaEnCruce()) {
-                          
-                        crActual = recuperarCrossRoad();
-                         if (crActual.getCarrer(way).getId().equals("V2")){
-                             System.out.println("___ Cruce");
-                             Carrer anterior = way;
-                             this.way = crActual.getCarrer(way);
-                             this.direction = way.dire;
-                            this.cmPosition = this.way.getCmPosition(
-                            anterior.getCmPosX(this.cmPosition, this.direction),
-                            anterior.getCmPosY(this.cmPosition, this.direction),
-                            this.direction);
-                         }
-                          if (crActual.getCarrer(way).getId().equals("H2")){
-                             System.out.println("___ Cruce H2");
-                             Carrer anterior = way;
-                             this.way = crActual.getCarrer(way);
-                            
-                            this.cmPosition = this.way.getCmPosition(
-                            anterior.getCmPosX(this.cmPosition, this.direction),
-                            anterior.getCmPosY(this.cmPosition, this.direction),
-                            this.direction);
-                            this.direction = way.dire; // despues de cambiar la posición, porque influye en la dirección anterior...
-                            while (this.estaEnCruce()){
-                                Thread.sleep(7);
-                                	if (this.direction==Direction.FORWARD)this.cmPosition += this.speed;
-                                            else this.cmPosition-=this.speed;
-                          
-                                
-                            }
-                            
-                            
-                         }
-                    
-//                    if (this.esCruce()) {
-// cruceActual = quinCruce();
-// if (numGir < rutaLanding.size()){
-// if (cruceActual.getCarrer(way).getId().equals(rutaLanding.get(numGir))){
-// Carrer anterior = way;
-// this.way = cruceActual.getCarrer(way);
-// this.direction = way.direccio;
-// this.cmPosition = this.way.getCmPosition(
-// anterior.getCmPosX(this.cmPosition, this.direction),
-// anterior.getCmPosY(this.cmPosition, this.direction),
-// this.direction);
-                    
-                           
-                    
-                    
-                    
-                    
-// numGir++;
- //}//if es cruce que cerc
-                    
-                  
-//                            
-//                         System.out.println(" ----------------------------------                      Cruceee");
-//                         if(this.way.inFrontCrossRoad(this) != null) {
-//                            crFrente= this.way.inFrontCrossRoad(this);
-//                         }
-//                       
-//                         
-//                        crActual = this.recuperarCrossRoad();
-//                                            
-//                        //Carrer c = (VCarrer) cr.getVCarrer();
-//                       
-//                        if(crActual.getHCarrer().idWay.equals("H1")) {
-//                             c = crActual.getVCarrer();
-//                        }
-//                        else if(crActual.getVCarrer().idWay.equals("V2")) {
-//                            c = crActual.getHCarrer();
-//                            System.out.println(c.idWay+" <-- id");
-//                    }
-//                        
-//                       
-//                            this.setWay(c);
-//                            Carrer anterior=  this.getWay();
-//                            this.direction = this.way.direction;
-//                            this.cmPosition= 
-//                                    this.way.getCmPosition(
-//                                            anterior.getCmPosX(this.cmPosition, this.direction),
-//                                            anterior.getCmPosY(this.cmPosition, this.direction),
-//                                            this.direction);
-//                      
-//
-////                   
-//                    }
-                }
-
-//                if (this.estado.equals(EstatAvio.FLYING)) {
-//                    this.cmPosition += this.speed;
-//                    this.speed -= 0.1;
-//
-//                }
-
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
-        }
     }
 
 }

@@ -167,7 +167,14 @@ this.addCrossRoad(new CrossRoad(this.carrers.get(1), controlador.fingers.get(i))
         //59800,0,0
         this.carrers.add(new VCarrer("V1", this.cmCarrerWidth, this.cmCarrerMark, 4000, 1500, 1000, Direction.BACKWARD));
         this.carrers.add(new VCarrer("V2", this.cmCarrerWidth, this.cmCarrerMark, 4800, 28000, 1000, Direction.FORWARD));
-
+        
+        
+        
+         this.carrers.add(new VCarrer("V3", this.cmCarrerWidth, this.cmCarrerMark, 6000, 10000, 5000, Direction.BACKWARD));
+         this.carrers.add(new VCarrer("V4", this.cmCarrerWidth, this.cmCarrerMark, 6000, 12000, 5000, Direction.BACKWARD));
+         this.carrers.add(new VCarrer("V5", this.cmCarrerWidth, this.cmCarrerMark, 6000, 14000, 5000, Direction.BACKWARD));
+         this.carrers.add(new VCarrer("V6", this.cmCarrerWidth, this.cmCarrerMark, 6000, 16000, 5000, Direction.BACKWARD));
+         this.carrers.add(new VCarrer("V6", this.cmCarrerWidth, this.cmCarrerMark, 6000, 18000, 5000, Direction.BACKWARD));
     //	this.carrers.add(new VCarrer("V3", this.cmCarrerWidth, this.cmCarrerMark, 10800, 3500, 1100));
         //	this.carrers.add(new VCarrer("V4", this.cmCarrerWidth, this.cmCarrerMark, 10800, 25000, 1100));
         //	this.carrers.add(new VCarrer("V4", this.cmCarrerWidth, this.cmCarrerMark, 10800, 14750, 1100));
@@ -230,16 +237,7 @@ this.addCrossRoad(new CrossRoad(this.carrers.get(1), controlador.fingers.get(i))
     public void paintBackgroud(Graphics g) {
         g.drawImage(this.imgBg, 0, 0, null);
     }
-// en controlador
-//    public void paintFingers(Graphics g) {
-//
-//        Iterator<Finger> itr = this.fingers.iterator();
-//
-//        while (itr.hasNext()) {
-//            itr.next().paint(g, this.factorX, this.factorY, this.offsetX, this.offsetY);
-//        }
-//
-//    }
+
 
   
 
