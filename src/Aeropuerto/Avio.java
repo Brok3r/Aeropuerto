@@ -26,10 +26,10 @@ public class Avio extends Thread {
         SOUDTH(Direction.FORWARD),
         WEST(Direction.BACKWARD),
         EAST(Direction.FORWARD);
-        private Direction direction;
+     
 
         private Orientation(Direction direction) {
-            this.direction = direction;
+            
         }
 
         public static Direction getDirection(Orientation orientation) {
@@ -171,7 +171,7 @@ public class Avio extends Thread {
         this.setWay(way);
         this.direction = Direction.FORWARD;
         this.controlador = controlador;
-
+        this.orientation=Orientation.EAST;
         try {
             this.imgCar = new ImageIcon(getClass().getResource("avio.png")).getImage();
         } catch (Exception e) {
@@ -211,24 +211,24 @@ public class Avio extends Thread {
     public synchronized void paint(Graphics g, float factorX, float factorY, int offsetX, int offsetY) {
         int iniX, iniY, finX, finY;
         if (way instanceof VCarrer) {
-            iniX = (int) ((((this.way.cmFinX + this.way.cmIniX) / 2) / factorX) + offsetX);
+            iniX = (int) ((((this.way.cmFinX + this.way.cmIniX) / 2-300) / factorX) + offsetX);
             finX = (int) (((this.cmWidth) / factorX));
 
             iniY = (int) (((this.way.cmIniY + this.cmPosition) / factorY) + offsetY);
             finY = (int) (((this.cmLong) / factorY));
 
-            imgCar = AvioGraphics.getCarImage(this, orientation.SOUDTH);
+            imgCar = AvioGraphics.getAvionImage(this);
             g.drawImage(this.imgCar, iniX, iniY, finX, finY, null);
 
         }
         if (way instanceof HCarrer) {
-            iniY = (int) ((((this.way.cmFinY + this.way.cmIniY) / 2) / factorY) + offsetY);
+            iniY = (int) ((((this.way.cmFinY + this.way.cmIniY) /2-200) / factorY) + offsetY);   
             finY = (int) (((this.cmWidth) / factorY));
 
             iniX = (int) (((this.way.cmIniX + this.cmPosition) / factorX) + offsetX);
             finX = (int) (((this.cmLong) / factorX));
 
-            imgCar = AvioGraphics.getCarImage(this, orientation.WEST);
+            imgCar = AvioGraphics.getAvionImage(this);
             g.drawImage(this.imgCar, iniX, iniY, finX, finY, null);
         }
 
@@ -240,13 +240,13 @@ public class Avio extends Thread {
     public void run() {
         while (true) {
             try {
+                
                 Thread.sleep(7);
                 if (this.direction == Direction.FORWARD) {
                     this.cmPosition += this.speed;
                 } else {
                     this.cmPosition -= this.speed;
                 }
-
                 if (estado == EstatAvio.BUSCARFINGER) {
                     controlador.entrar(this);
                     estado = EstatAvio.RUN;
@@ -264,24 +264,27 @@ public class Avio extends Thread {
                         this.setEstado(estado.STOP);
                         if (this == f.getAvio()) {
 
-                            
+                            orientation=Orientation.SOUDTH;
                             crActual = recuperarCrossRoad();
                             Carrer anterior = way;
                             this.direction = Direction.FORWARD;
                             this.way = crActual.getCarrer(way);
+                            
                             this.cmPosition = this.way.getCmPosition(
                                 anterior.getCmPosX(this.cmPosition, this.direction),
                                 anterior.getCmPosY(this.cmPosition, this.direction),
-                                this.direction)+1000;
+                                this.direction)+300;
                             
                             this.estado = EstatAvio.APARCADO;
                             
-                            this.sleep(1000);
+                            sleep((int) (Math.random() * 7000));
+                            controlador.salir(this);
 
                         }
                     }
                     crActual = recuperarCrossRoad();
                     if (crActual.getCarrer(way).getId().equals("V2")) {
+                         orientation=Orientation.SOUDTH;
                         Carrer anterior = way;
                         this.way = crActual.getCarrer(way);
                         this.direction = way.dire;
@@ -292,6 +295,7 @@ public class Avio extends Thread {
                         esperar();
                     }
                     if (crActual.getCarrer(way).getId().equals("H2")) {
+                         orientation=Orientation.WEST;
                         Carrer anterior = way;
                         this.way = crActual.getCarrer(way);
 

@@ -12,6 +12,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+import Aeropuerto.Avio.Orientation;
 
 /**
  *
@@ -19,17 +20,20 @@ import javax.imageio.ImageIO;
  */
 public class AvioGraphics {
 
-    public static BufferedImage imgAvio1;
-    public static BufferedImage imgAvio2;
+    public static BufferedImage imgAvionn;
+    public static BufferedImage imgAvions;
+    public static BufferedImage imgAvione;
+    public static BufferedImage imgAviono;
     private static boolean isLoad = false;
 
     private static void loadCarImages() {
         if (AvioGraphics.isLoad) {
             return; 
         }
-
-        AvioGraphics.imgAvio1 = AvioGraphics.loadImage("avion.png");
-        AvioGraphics.imgAvio2 = AvioGraphics.loadImage("avionv.png");
+        AvioGraphics.imgAvionn = AvioGraphics.loadImage("avionn.png");
+        AvioGraphics.imgAvions = AvioGraphics.loadImage("avions.png");
+        AvioGraphics.imgAvione = AvioGraphics.loadImage("avione.png");
+        AvioGraphics.imgAviono = AvioGraphics.loadImage("aviono.png");
         AvioGraphics.isLoad = true;
     }
 
@@ -106,7 +110,7 @@ public class AvioGraphics {
 //        return imgSrc;
 //    }
 
-    public static BufferedImage getCarImage(Avio avio, Avio.Orientation o) {
+    public static BufferedImage getAvionImage(Avio avio) {
         BufferedImage imgSource, imgTarget;
         Graphics2D g2d;
 
@@ -115,9 +119,14 @@ public class AvioGraphics {
         }
 
         imgTarget = imgSource = null;
-        if(o  == Avio.Orientation.NORTH || o  == Avio.Orientation.SOUDTH){
-              imgSource = AvioGraphics.imgAvio2;
-        }else imgSource = AvioGraphics.imgAvio1;
+        Aeropuerto.Avio.Orientation o;
+        switch(avio.getOrientation()){
+            case WEST: imgSource = AvioGraphics.imgAviono; break;
+            case EAST: imgSource = AvioGraphics.imgAvione; break;
+            case SOUDTH: imgSource = AvioGraphics.imgAvions; break;
+            case NORTH: imgSource = AvioGraphics.imgAvionn; break;
+        }
+  
 
               
         
@@ -132,7 +141,7 @@ public class AvioGraphics {
         return imgTarget;
     }
 
-    private static BufferedImage createCarImg(Avio avio, float factorX, float factorY) {
+    private static BufferedImage createAvionImg(Avio avio, float factorX, float factorY) {
         BufferedImage imgSrc;
         Graphics2D g2d;
 

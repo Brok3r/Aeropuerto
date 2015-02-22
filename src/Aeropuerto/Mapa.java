@@ -160,12 +160,12 @@ this.addCrossRoad(new CrossRoad(this.carrers.get(1), controlador.fingers.get(i))
     private void loadCarrers() {
         //String idWay, int cmWayWidth, int cmWayMark, int cmLong, int cmPosIniX, int cmPosIniY)
         this.carrers.add(new HCarrer("H1", this.cmCarrerWidth, this.cmCarrerMark, 27000, 1500, 1000, Direction.FORWARD));
-        this.carrers.add(new HCarrer("H2", this.cmCarrerWidth, this.cmCarrerMark, 27000, 1500, 5000, Direction.BACKWARD));
+        this.carrers.add(new HCarrer("H2", this.cmCarrerWidth, this.cmCarrerMark, 18000, 10500, 5000, Direction.BACKWARD));
 
         //	this.carrers.add(new HCarrer("H3", this.cmCarrerWidth/2, this.cmCarrerMark/2, 21000, 4000, 11500));
         // id, cmquetecarrer(amplada), marcad'enmig, longitud, posicio inicia x, pos inicia x
         //59800,0,0
-        this.carrers.add(new VCarrer("V1", this.cmCarrerWidth, this.cmCarrerMark, 4000, 1500, 1000, Direction.BACKWARD));
+      //  this.carrers.add(new VCarrer("V1", this.cmCarrerWidth, this.cmCarrerMark, 4000, 1500, 1000, Direction.BACKWARD));
         this.carrers.add(new VCarrer("V2", this.cmCarrerWidth, this.cmCarrerMark, 4800, 28000, 1000, Direction.FORWARD));
         
         

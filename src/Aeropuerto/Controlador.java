@@ -26,13 +26,10 @@ public class Controlador implements Runnable {
 
     ArrayList<Avio> avions = new ArrayList<Avio>();
     ArrayList<Carrer> carrers = new ArrayList<Carrer>();
-    final int numMaxAvions = 3;
+    final int numMaxAvions = 10;
     final int numFingers = 5;
     public ArrayList<Finger> fingers = new ArrayList<>();
-    private ArrayList<Avio> aparcados = new ArrayList<>();
-    private ArrayList<Avio> esperando = new ArrayList<>();
-    private int plazas = 5;
-
+ 
     //arraylist fingers ocupados
     //arraylist fingers libresº
     public Controlador(ArrayList<Carrer> c) {
@@ -93,11 +90,17 @@ public class Controlador implements Runnable {
 		// TODO Auto-generated method stub
 
         //crear fingers
-        for (int i = 0; i < numMaxAvions; i++) {
+      //  for (int i = 0; i < numMaxAvions; i++) {
+        int i= 0;
+        while(true){
             try {
 
                 Thread.sleep(1000);
-                addAvio("A"+i, carrers.get(0));
+                if(fingerLibre()){
+                    addAvio("A"+i, carrers.get(0));
+                     i++;
+                }
+               
 
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
@@ -111,17 +114,17 @@ public class Controlador implements Runnable {
     public synchronized void entrar(Avio avio) { // cotxe entra al pàrquing
         while (!fingerLibre()) {
             try {
-                System.out.println(avio.getidAvio() + " :Esperando parking lleno.");
-                esperando.add(avio);
+                String mensaje = (avio.getidAvio().isEmpty())? "Ningún avión esperando.":avio.getidAvio() + " :Esperando parking lleno.";
+                System.out.println(mensaje);
                 imprimirEstado();
                 wait();
+                System.out.println("AVION LIBERADO");
             } catch (InterruptedException e) {
             }
         }
-        esperando.remove(avio);
-        aparcados.add(avio);
+       
         aparcarAvionEnfinger(avio);
-        plazas--;
+       
     }
 
     public void imprimirEstado() {
@@ -147,7 +150,13 @@ public class Controlador implements Runnable {
        f.setEstat(Finger.Estat.OCUPADO);       
       
         }
-
+    public synchronized void salir(Avio avio) { 
+        Finger f = getFingerAvion(avio);
+        f.setAvio(null);
+        f.setEstat(Finger.Estat.VACIO);
+        imprimirEstado();
+        notifyAll();
+    }
     public Finger buscarFingerVacio() {
         for (Finger finger : fingers) {
             if (!finger.getOcupado()) {
@@ -155,6 +164,13 @@ public class Controlador implements Runnable {
             }
         }
         return null;
+    }
+    public Finger getFingerAvion(Avio avion){
+        for (Finger finger : fingers) {
+            if(finger.getAvio()==avion){
+                return finger;
+            }
+        }return null;
     }
 
 }
