@@ -1,41 +1,27 @@
-
-/*
- * CONTROLADOR
- * 
- * ArrayList <Avio>
- * ArrayList <Carrer>
- * final int numMaxAvions
- *
- * ---------------
- * 
- * controlador(ArrayListCarrers)
- * getAvions
- * addAvio
- * run (){for  1...40}
- *    sleep
- *    addAvio
- */
 package Aeropuerto;
 
 import Aeropuerto.Avio.Direction;
+import Utils.Constantes;
 import java.awt.Graphics;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import sockets.Cliente;
+import sockets.Servidor;
 
 public class Controlador implements Runnable {
 
-    ArrayList<Avio> avions = new ArrayList<Avio>();
-    ArrayList<Carrer> carrers = new ArrayList<Carrer>();
-    final int numMaxAvions = 10;
-    final int numFingers = 5;
+    
+
+    ArrayList<Avio> avions = new ArrayList<>();
+    ArrayList<Carrer> carrers = new ArrayList<>();
     public ArrayList<Finger> fingers = new ArrayList<>();
  
-    //arraylist fingers ocupados
-    //arraylist fingers libresº
+
     public Controlador(ArrayList<Carrer> c) {
-        // TODO Auto-generated constructor stub
+     
         this.carrers = c;
-        for (int i = 0; i < numFingers; i++) {
+        for (int i = 0; i < Constantes.numFingers; i++) {
             addFinger(i);
         }
     }
@@ -89,22 +75,31 @@ public class Controlador implements Runnable {
     public void run() {
 		// TODO Auto-generated method stub
 
-        //crear fingers
-      //  for (int i = 0; i < numMaxAvions; i++) {
         int i= 0;
         while(true){
             try {
-
+                
                 Thread.sleep(1000);
-                if(fingerLibre()){
+                if(fingerLibre()){ 
+                      Avio tmp=null;
+                    tmp = Cliente.recibirAvion();
+                    //Si los aviones se reciben por sockets:
+                    if(null != tmp){
+                        avions.add(tmp);
+                     
+                    }else {
                     addAvio("A"+i, carrers.get(0));
-                     i++;
+                    Servidor.enviarAvion(avions.get(i));
+                    i++;  
+                    }
+                  
                 }
                
 
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
+            } catch (IOException ex) {
             }
 
         }
@@ -118,7 +113,7 @@ public class Controlador implements Runnable {
                 System.out.println(mensaje);
                 imprimirEstado();
                 wait();
-                System.out.println("AVION LIBERADO");
+             
             } catch (InterruptedException e) {
             }
         }
@@ -143,6 +138,9 @@ public class Controlador implements Runnable {
         return false;
     }
 
+    public void delete(Avio avio) {
+        avions.remove(avio);
+    }
     public void aparcarAvionEnfinger(Avio avion) {
         
        Finger f=  buscarFingerVacio();
@@ -156,6 +154,9 @@ public class Controlador implements Runnable {
         f.setEstat(Finger.Estat.VACIO);
         imprimirEstado();
         notifyAll();
+ 
+      
+        
     }
     public Finger buscarFingerVacio() {
         for (Finger finger : fingers) {

@@ -1,5 +1,6 @@
 package Aeropuerto;
 
+import Utils.Constantes;
 import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -16,12 +17,7 @@ import javax.swing.JTable;
 
 public class Aeroport extends JFrame implements Runnable, MouseWheelListener, ActionListener, ComponentListener {
 
-    public static final int CIUTAT_CM_WIDTH = 60000; // Amplada ciutat
-    public static final int CIUTAT_CM_HEIGHT = 34500; // Al�ada ciutat
-    public static final int FRAME_PIX_WIDTH = 1350; // Amplada window
-    public static final int FRAME_PIX_HEIGHT = 750;  // Al�ada window 
-    public static final int MAPA_PIX_WIDTH = 1080; // Amplada window
-    public static final int MAPA_PIX_HEIGH = 620;  // Al�ada window 
+
     private JButton bUp, bDown, bLeft, bRight, bZoomPlus, bZoomMinus;
     private JButton bBottomFill1, bBottomFill2;
     private JTable tStatistics;
@@ -33,8 +29,8 @@ public class Aeroport extends JFrame implements Runnable, MouseWheelListener, Ac
 
     public Aeroport() {
         this.map = new Mapa(
-                Aeroport.CIUTAT_CM_WIDTH, Aeroport.CIUTAT_CM_HEIGHT,
-                Aeroport.MAPA_PIX_WIDTH, Aeroport.MAPA_PIX_HEIGH);
+              Constantes.CIUTAT_CM_WIDTH, Constantes.CIUTAT_CM_HEIGHT,
+               Constantes.MAPA_PIX_WIDTH, Constantes.MAPA_PIX_HEIGH);
 
         this.createFrame();
         
@@ -57,19 +53,19 @@ public class Aeroport extends JFrame implements Runnable, MouseWheelListener, Ac
     }
 
     public static int getCmWidth() {
-        return Aeroport.CIUTAT_CM_WIDTH;
+        return Constantes.CIUTAT_CM_WIDTH;
     }
 
     public static int getCmHeight() {
-        return Aeroport.CIUTAT_CM_HEIGHT;
+        return Constantes.CIUTAT_CM_HEIGHT;
     }
 
     public static int getFramePixWidth() {
-        return Aeroport.FRAME_PIX_WIDTH;
+        return Constantes.FRAME_PIX_WIDTH;
     }
 
     public static int getFramePixHeight() {
-        return Aeroport.FRAME_PIX_HEIGHT;
+        return Constantes.FRAME_PIX_HEIGHT;
     }
 
     

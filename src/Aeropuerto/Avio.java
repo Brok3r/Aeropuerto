@@ -161,7 +161,7 @@ public class Avio extends Thread {
         this.idAvio = idAvio;
         this.cmLong = 800;
         this.cmWidth = 400;
-        this.speed = 70;
+        this.speed = 75;
         this.color = Color.CYAN;
         this.factorX = this.factorY = -1;
         this.course = -1;
@@ -252,9 +252,11 @@ public class Avio extends Thread {
                     estado = EstatAvio.RUN;
 
                 }
-//                      if(estado.equals(EstatAvio.STOP)){
-//                          System.out.println("Aparcado.");
-//                      }
+                if(estado == EstatAvio.TAKINGOFF){
+                    if(cmPosition>=this.way.cmLong+5000){
+                                controlador.delete(this);
+                            }
+                }
                 if (this.estaEnCruce()) {
 
                     if (this.estaEnFinger()) {
@@ -277,8 +279,11 @@ public class Avio extends Thread {
                             
                             this.estado = EstatAvio.APARCADO;
                             
-                            sleep((int) (Math.random() * 7000));
+                            sleep((int) (Math.random() * 8600));
+                             this.estado=EstatAvio.TAKINGOFF;
                             controlador.salir(this);
+                           
+                                   
 
                         }
                     }
@@ -303,68 +308,13 @@ public class Avio extends Thread {
                                 anterior.getCmPosX(this.cmPosition, this.direction),
                                 anterior.getCmPosY(this.cmPosition, this.direction),
                                 this.direction);
-                        this.direction = way.dire; // despues de cambiar la posición, porque influye en la dirección anterior...
+                        this.direction = way.dire; 
                         esperar();
-                        /*
-                         if (estado = aparcado) sleep random
-                         controlador.salir
-                            
-                         */
-
+                        
                     }
 
-//                    if (this.esCruce()) {
-// cruceActual = quinCruce();
-// if (numGir < rutaLanding.size()){
-// if (cruceActual.getCarrer(way).getId().equals(rutaLanding.get(numGir))){
-// Carrer anterior = way;
-// this.way = cruceActual.getCarrer(way);
-// this.direction = way.direccio;
-// this.cmPosition = this.way.getCmPosition(
-// anterior.getCmPosX(this.cmPosition, this.direction),
-// anterior.getCmPosY(this.cmPosition, this.direction),
-// this.direction);
-// numGir++;
-                    //}//if es cruce que cerc
-//                            
-//                         System.out.println(" ----------------------------------                      Cruceee");
-//                         if(this.way.inFrontCrossRoad(this) != null) {
-//                            crFrente= this.way.inFrontCrossRoad(this);
-//                         }
-//                       
-//                         
-//                        crActual = this.recuperarCrossRoad();
-//                                            
-//                        //Carrer c = (VCarrer) cr.getVCarrer();
-//                       
-//                        if(crActual.getHCarrer().idWay.equals("H1")) {
-//                             c = crActual.getVCarrer();
-//                        }
-//                        else if(crActual.getVCarrer().idWay.equals("V2")) {
-//                            c = crActual.getHCarrer();
-//                            System.out.println(c.idWay+" <-- id");
-//                    }
-//                        
-//                       
-//                            this.setWay(c);
-//                            Carrer anterior=  this.getWay();
-//                            this.direction = this.way.direction;
-//                            this.cmPosition= 
-//                                    this.way.getCmPosition(
-//                                            anterior.getCmPosX(this.cmPosition, this.direction),
-//                                            anterior.getCmPosY(this.cmPosition, this.direction),
-//                                            this.direction);
-//                      
-//
-////                   
-//                    }
                 }
 
-//                if (this.estado.equals(EstatAvio.FLYING)) {
-//                    this.cmPosition += this.speed;
-//                    this.speed -= 0.1;
-//
-//                }
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }

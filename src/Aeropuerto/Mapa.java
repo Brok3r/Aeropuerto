@@ -1,9 +1,7 @@
 package Aeropuerto;
 
 import Aeropuerto.Avio.Direction;
-import Aeropuerto.Avio.EstatAvio;
 import java.awt.Canvas;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -14,17 +12,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-/*
 
- en controlador se crean los fingers y un metodo para pintar que luego llamará el mapa.
-
- */
 import javax.imageio.ImageIO;
 
-import Aeropuerto.Finger;
-import Aeropuerto.Finger.Estat;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Mapa extends Canvas implements Runnable {
 
@@ -159,13 +149,10 @@ this.addCrossRoad(new CrossRoad(this.carrers.get(1), controlador.fingers.get(i))
 
     private void loadCarrers() {
         //String idWay, int cmWayWidth, int cmWayMark, int cmLong, int cmPosIniX, int cmPosIniY)
-        this.carrers.add(new HCarrer("H1", this.cmCarrerWidth, this.cmCarrerMark, 27000, 1500, 1000, Direction.FORWARD));
+        this.carrers.add(new HCarrer("H1", this.cmCarrerWidth, this.cmCarrerMark, 27000, 1500, 3000, Direction.FORWARD));
         this.carrers.add(new HCarrer("H2", this.cmCarrerWidth, this.cmCarrerMark, 18000, 10500, 5000, Direction.BACKWARD));
 
-        //	this.carrers.add(new HCarrer("H3", this.cmCarrerWidth/2, this.cmCarrerMark/2, 21000, 4000, 11500));
-        // id, cmquetecarrer(amplada), marcad'enmig, longitud, posicio inicia x, pos inicia x
-        //59800,0,0
-      //  this.carrers.add(new VCarrer("V1", this.cmCarrerWidth, this.cmCarrerMark, 4000, 1500, 1000, Direction.BACKWARD));
+       
         this.carrers.add(new VCarrer("V2", this.cmCarrerWidth, this.cmCarrerMark, 4800, 28000, 1000, Direction.FORWARD));
         
         
@@ -175,21 +162,7 @@ this.addCrossRoad(new CrossRoad(this.carrers.get(1), controlador.fingers.get(i))
          this.carrers.add(new VCarrer("V5", this.cmCarrerWidth, this.cmCarrerMark, 6000, 14000, 5000, Direction.BACKWARD));
          this.carrers.add(new VCarrer("V6", this.cmCarrerWidth, this.cmCarrerMark, 6000, 16000, 5000, Direction.BACKWARD));
          this.carrers.add(new VCarrer("V6", this.cmCarrerWidth, this.cmCarrerMark, 6000, 18000, 5000, Direction.BACKWARD));
-    //	this.carrers.add(new VCarrer("V3", this.cmCarrerWidth, this.cmCarrerMark, 10800, 3500, 1100));
-        //	this.carrers.add(new VCarrer("V4", this.cmCarrerWidth, this.cmCarrerMark, 10800, 25000, 1100));
-        //	this.carrers.add(new VCarrer("V4", this.cmCarrerWidth, this.cmCarrerMark, 10800, 14750, 1100));
-//
-//    	this.carrers.add(new VCarrer("F1", this.cmCarrerWidth/2, this.cmCarrerMark/2, 2000, 5900, 11500));
-//    	this.carrers.add(new VCarrer("F2", this.cmCarrerWidth/2, this.cmCarrerMark/2, 2000, 7900, 11500));
-//    	this.carrers.add(new VCarrer("F3", this.cmCarrerWidth/2, this.cmCarrerMark/2, 2000, 9900, 11500));
-//    	this.carrers.add(new VCarrer("F4", this.cmCarrerWidth/2, this.cmCarrerMark/2, 2000, 11900, 11500));
-//    	this.carrers.add(new VCarrer("F5", this.cmCarrerWidth/2, this.cmCarrerMark/2, 2000, 13900, 11500));
-//    	this.carrers.add(new VCarrer("F6", this.cmCarrerWidth/2, this.cmCarrerMark/2, 2000, 15900, 11500));
-//    	this.carrers.add(new VCarrer("F7", this.cmCarrerWidth/2, this.cmCarrerMark/2, 2000, 17900, 11500));
-//    	this.carrers.add(new VCarrer("F8", this.cmCarrerWidth/2, this.cmCarrerMark/2, 2000, 19900, 11500));
-//    	this.carrers.add(new VCarrer("F9", this.cmCarrerWidth/2, this.cmCarrerMark/2, 2000, 21900, 11500));
-//    	this.carrers.add(new VCarrer("F10", this.cmCarrerWidth/2, this.cmCarrerMark/2, 2000, 23900, 11500));
-        //20000,0,100
+
     }
 
     public void moveRight() {
@@ -234,24 +207,19 @@ this.addCrossRoad(new CrossRoad(this.carrers.get(1), controlador.fingers.get(i))
         gg.dispose();
     }
 
-    public void paintBackgroud(Graphics g) {
-        g.drawImage(this.imgBg, 0, 0, null);
-    }
-
-
   
 
     public void paintCrossRoads(Graphics g) {
         Iterator<CrossRoad> itr = this.crossroads.iterator();
 
         while (itr.hasNext()) {
+         
             itr.next().paint(g, this.factorX, this.factorY, this.offsetX, this.offsetY);
         }
     }
     
     public synchronized void paintImgMap() {
         if ((this.mapWidth <= 0) || (this.mapHeigth <= 0)) {
-            System.out.println("Map size error: (" + this.mapWidth + "," + this.mapHeigth + ")");
             return;
         }
 
@@ -259,22 +227,24 @@ this.addCrossRoad(new CrossRoad(this.carrers.get(1), controlador.fingers.get(i))
         Graphics2D g = this.imgMap.createGraphics();
 
         this.paintBackgroud(g);
-        this.paintCarrers(g);
-        this.paintCrossRoads(g);
-        this.controlador.paintFingers(g,this.factorX, this.factorY, this.offsetX, this.offsetY);
-    
-
+  
         g.dispose();
 
     }
+    public void paintBackgroud(Graphics g) {
+ int iniX, iniY, finX, finY;
+ 
+ iniX = (int)((0 / factorX) + offsetX);
+ iniY = (int)((0 / factorY) + offsetY);
+ finX = (int)((30000/ factorX));
+ finY = (int)((20000/ factorY)); 
 
-    /*
-     public synchronized void paintAvio(Graphics g) {
-       
-     this.controlador.paintAvions(g, this.factorX, this.factorY, this.offsetX, this.offsetY);
-    	
-     }
-     */
+ 
+
+ g.drawImage(this.imgBg, iniX, iniY, finX, finY, null);
+ }
+
+
     public void paintCarrers(Graphics g) {
 
         Iterator<Carrer> itr = this.carrers.iterator();

@@ -66,8 +66,8 @@ public class AvioGraphics {
         xyPixRotate = (int) (Math.sqrt(Math.pow(imgSrc.getHeight(), 2) + Math.pow(imgSrc.getWidth(), 2) / 4));
         imgRotate = new BufferedImage(xyPixRotate, xyPixRotate, BufferedImage.TYPE_INT_ARGB);
 
-        xCenterNew = imgSrc.getWidth() / 2.0f;
-        yCenterNew = imgSrc.getHeight() / 2.0f;
+        xCenterNew = imgSrc.getWidth() / 0.0f;
+        yCenterNew = imgSrc.getHeight() / 0.0f;
         xCenterFinal = xyPixRotate / 2.0f;
         yCenterFinal = imgRotate.getHeight() / 2.0f;
         xCenterTranslate = (int) (xCenterFinal - xCenterNew);
